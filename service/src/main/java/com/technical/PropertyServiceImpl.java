@@ -6,7 +6,10 @@ import com.technical.model.PropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class PropertyServiceImpl implements PropertyService{
@@ -50,5 +53,12 @@ public class PropertyServiceImpl implements PropertyService{
             return;
         }
         throw new ResourceNotFoundException("Property not found");
+    }
+
+    @Override
+    public List<Property> getAllProperties() {
+        return StreamSupport.stream(propertyRepository.findAll().spliterator(), false)
+                .map(propertyMapper::toBusiness)
+                .collect(Collectors.toList());
     }
 }

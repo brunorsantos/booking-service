@@ -150,5 +150,34 @@ public class PropertyServiceTest {
         }
     }
 
+    @Test
+    void shouldGetAllProperties() {
+        // Prepare
+        final var property1 = new Property(UUID.randomUUID(),"Address line1", "City", "Owner full name");
+        final var property2 = new Property(UUID.randomUUID(),"Address line2", "City", "Owner full name");
+        final var property3 = new Property(UUID.randomUUID(),"Address line3", "City", "Owner full name");
+
+        when(propertyRepositoryMock.findAll()).thenReturn(java.util.List.of(new PropertyEntity(property1.getId(), property1.getAddress(), property1.getCity(), property1.getOwnerName()),
+                new PropertyEntity(property2.getId(), property2.getAddress(), property2.getCity(), property2.getOwnerName()),
+                new PropertyEntity(property3.getId(), property3.getAddress(), property3.getCity(), property3.getOwnerName())));
+
+        // Execute
+        final var properties = subject.getAllProperties();
+
+        assertThat(properties.size()).isEqualTo(3);
+        assertThat(properties.get(0).getAddress()).isEqualTo(property1.getAddress());
+        assertThat(properties.get(0).getCity()).isEqualTo(property1.getCity());
+        assertThat(properties.get(0).getOwnerName()).isEqualTo(property1.getOwnerName());
+        assertThat(properties.get(0).getId()).isEqualTo(property1.getId());
+        assertThat(properties.get(1).getAddress()).isEqualTo(property2.getAddress());
+        assertThat(properties.get(1).getCity()).isEqualTo(property2.getCity());
+        assertThat(properties.get(1).getOwnerName()).isEqualTo(property2.getOwnerName());
+        assertThat(properties.get(1).getId()).isEqualTo(property2.getId());
+        assertThat(properties.get(2).getAddress()).isEqualTo(property3.getAddress());
+        assertThat(properties.get(2).getCity()).isEqualTo(property3.getCity());
+        assertThat(properties.get(2).getOwnerName()).isEqualTo(property3.getOwnerName());
+        assertThat(properties.get(2).getId()).isEqualTo(property3.getId());
+    }
+
 
 }
