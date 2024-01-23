@@ -48,6 +48,7 @@ public class PropertyServiceImpl implements PropertyService{
 
     @Override
     public void deleteProperty(final UUID id) {
+        //TODO: check bookings and blocks before deleting
         if (propertyRepository.existsById(id)) {
             propertyRepository.deleteById(id);
             return;

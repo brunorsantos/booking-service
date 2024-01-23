@@ -1,6 +1,7 @@
 package com.technical.exception;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 
 @RestControllerAdvice
+@Slf4j
 public class ApplicationExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -31,6 +33,7 @@ public class ApplicationExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiErrorResponse handleResourceNotFoundException(ResourceNotFoundException ex) {
+        log.warn("Resource not found", ex);
         return new ApiErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), Collections.singletonList("Resource not found"));
     }
 }
