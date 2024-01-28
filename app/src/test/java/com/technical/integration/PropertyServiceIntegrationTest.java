@@ -21,7 +21,7 @@ public class PropertyServiceIntegrationTest extends AbstractIntegrationTest{
 
     @Autowired
     public PropertyServiceIntegrationTest(final PropertyRepository propertyRepository) {
-        subject = new PropertyServiceImpl(propertyRepository, propertyMapper);
+        subject = new PropertyServiceImpl(propertyRepository, propertyMapper, bookingService);
     }
 
     @BeforeEach
@@ -51,7 +51,7 @@ public class PropertyServiceIntegrationTest extends AbstractIntegrationTest{
 
         final var propertyEntity = propertyRepository.save(propertyMapper.toEntity(property));
 
-        final var propertyBusiness = subject.getProperty(propertyEntity.getId());
+        final var propertyBusiness = subject.getPropertyWithBookings(propertyEntity.getId());
 
         assertThat(propertyBusiness.getAddress()).isEqualTo(propertyEntity.getAddress());
         assertThat(propertyBusiness.getCity()).isEqualTo(propertyEntity.getCity());

@@ -2,6 +2,8 @@ package com.technical.model;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 public class Property {
@@ -10,6 +12,7 @@ public class Property {
     private String address;
     private String city;
     private String ownerName;
+    private List<Booking> bookings;
 
     public Property(UUID id, String address, String city, String ownerName) {
         this.id = id;
@@ -51,5 +54,35 @@ public class Property {
 
     public void setOwnerName(String ownerName) {
         this.ownerName = ownerName;
+    }
+
+    public List<Booking> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Booking> bookings) {
+        this.bookings = bookings;
+    }
+
+    /**
+     * Checks if the property is booked for a given date range.
+     *
+     * Obs: This method consider that a new book can start in the same day that another book ends.
+     * Considering for example check-in and check-out hours,
+     * with proper distances to use the same day
+     *
+     * @param startDate the start date of the date range to be checked
+     * @param endDate the end date of the date range to be checked
+     * @return true if the property is booked for any part of the date range, false otherwise
+     */
+    public boolean isBooked(Date startDate, Date endDate) {
+        if (bookings == null || bookings.isEmpty()) {
+            return false;
+        }
+
+        return bookings.stream()
+                .anyMatch(booking -> !(booking.getEndDate().compareTo(startDate) <= 0
+                        || booking.getStartDate().compareTo(endDate) >= 0));
+
     }
 }

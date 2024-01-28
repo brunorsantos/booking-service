@@ -1,5 +1,6 @@
 package com.technical.integration;
 
+import com.technical.BookingService;
 import com.technical.FirstRepository;
 import com.technical.PropertyRepository;
 import com.technical.dto.FirstDtoMapper;
@@ -18,15 +19,11 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
-    protected FirstRepository firstRepository;
-    @Autowired
-    protected FirstDtoMapper firstDtoMapper;
-    @Autowired
-    protected FirstMapper firstMapper;
-    @Autowired
     protected PropertyMapper propertyMapper;
     @Autowired
     protected PropertyRepository propertyRepository;
     @Autowired
     protected PropertyDtoMapper propertyDtoMapper;
+    @Autowired
+    protected BookingService bookingService;
 }

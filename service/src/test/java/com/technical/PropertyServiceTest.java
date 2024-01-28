@@ -1,5 +1,6 @@
 package com.technical;
 
+import com.technical.entity.BookingEntity;
 import com.technical.entity.PropertyEntity;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.*;
@@ -7,6 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -20,11 +24,14 @@ public class PropertyServiceTest {
 
     private PropertyRepository propertyRepositoryMock;
 
+    private BookingService bookingServiceMock;
+
     @BeforeEach
     void setUp() {
         var mapper = new PropertyMapperImpl();
         propertyRepositoryMock = mock(PropertyRepository.class);
-        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper);
+        bookingServiceMock = mock(BookingService.class);
+        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper, bookingServiceMock);
     }
 
     @Test
@@ -179,5 +186,47 @@ public class PropertyServiceTest {
         assertThat(properties.get(2).getId()).isEqualTo(property3.getId());
     }
 
+    @Test
+    void shouldGetPropertyWithBookings() {
+        // Prepare
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+        Date startDate1 = calendar.getTime();
 
+        calendar.add(Calendar.DAY_OF_YEAR, 4);
+        Date endDate1 = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_YEAR, 5);
+        Date startDate2 = calendar.getTime();
+
+        calendar.add(Calendar.DAY_OF_YEAR, 10);
+        Date endDate2 = calendar.getTime();
+
+        final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
+        final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId());
+        final var booking2 = new Booking(UUID.randomUUID(), startDate2, endDate2, "Guest name2", "5", property.getId());
+
+        property.setBookings(java.util.List.of(booking1, booking2));
+
+        when(propertyRepositoryMock.findById(any()))
+                .thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
+
+        when(bookingServiceMock.getBookingsByPropertyId(any())).thenReturn(java.util.List.of(booking1, booking2));
+
+        // Execute
+        final var propertyRetrieved = subject.getPropertyWithBookings(property.getId());
+
+        // Assert
+        assertThat(propertyRetrieved.getAddress()).isEqualTo(property.getAddress());
+        assertThat(propertyRetrieved.getCity()).isEqualTo(property.getCity());
+        assertThat(propertyRetrieved.getOwnerName()).isEqualTo(property.getOwnerName());
+        assertThat(propertyRetrieved.getId()).isEqualTo(property.getId());
+        assertThat(propertyRetrieved.getBookings().size()).isEqualTo(2);
+        assertThat(propertyRetrieved.getBookings().get(0).getId()).isEqualTo(booking1.getId());
+        assertThat(propertyRetrieved.getBookings().get(0).getStartDate()).isEqualTo(booking1.getStartDate());
+        assertThat(propertyRetrieved.getBookings().get(0).getEndDate()).isEqualTo(booking1.getEndDate());
+        assertThat(propertyRetrieved.getBookings().get(0).getGuestName()).isEqualTo(booking1.getGuestName());
+        assertThat(propertyRetrieved.getBookings().get(0).getNumberOfGuests()).isEqualTo(booking1.getNumberOfGuests());
+
+    }
 }

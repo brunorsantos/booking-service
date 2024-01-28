@@ -17,10 +17,13 @@ public class PropertyServiceImpl implements PropertyService{
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
 
+    private final BookingService bookingService;
+
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyMapper propertyMapper) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyMapper propertyMapper, BookingService bookingService){
         this.propertyRepository = propertyRepository;
         this.propertyMapper = propertyMapper;
+        this.bookingService = bookingService;
     }
 
     @Override
@@ -35,6 +38,19 @@ public class PropertyServiceImpl implements PropertyService{
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
 
         return propertyMapper.toBusiness(propertyEntity);
+    }
+
+    @Override
+    public Property getPropertyWithBookings(UUID id) {
+        final var propertyEntity = propertyRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
+
+        var property =  propertyMapper.toBusiness(propertyEntity);
+
+        final var bookings = bookingService.getBookingsByPropertyId(id);
+        property.setBookings(bookings);
+
+        return property;
     }
 
     @Override
