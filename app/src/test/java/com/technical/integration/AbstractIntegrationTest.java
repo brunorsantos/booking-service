@@ -1,10 +1,12 @@
 package com.technical.integration;
 
+import com.technical.BookingRepository;
 import com.technical.BookingService;
 import com.technical.FirstRepository;
 import com.technical.PropertyRepository;
 import com.technical.dto.FirstDtoMapper;
 import com.technical.dto.PropertyDtoMapper;
+import com.technical.model.BookingMapper;
 import com.technical.model.FirstMapper;
 import com.technical.model.PropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,4 +28,8 @@ public abstract class AbstractIntegrationTest {
     protected PropertyDtoMapper propertyDtoMapper;
     @Autowired
     protected BookingService bookingService;
+    @Autowired
+    protected BookingMapper bookingMapper;
+    @Autowired
+    protected BookingRepository bookingRepository;
 }

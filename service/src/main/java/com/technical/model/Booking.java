@@ -13,8 +13,8 @@ public class Booking {
 
     public Booking(UUID id, Date startDate, Date endDate, String guestName, String numberOfGuests, UUID propertyId) {
         this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = new Date(startDate.getTime());
+        this.endDate = new Date(endDate.getTime());
         this.guestName = guestName;
         this.numberOfGuests = numberOfGuests;
         this.propertyId = propertyId;
@@ -36,7 +36,7 @@ public class Booking {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = new Date(startDate.getTime());
     }
 
     public Date getEndDate() {
@@ -44,7 +44,7 @@ public class Booking {
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = new Date(endDate.getTime());;
     }
 
     public String getGuestName() {
