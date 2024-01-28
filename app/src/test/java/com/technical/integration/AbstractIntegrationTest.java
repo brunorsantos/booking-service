@@ -18,6 +18,12 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected MockMvc mockMvc;
     @Autowired
+    protected FirstRepository firstRepository;
+    @Autowired
+    protected FirstDtoMapper firstDtoMapper;
+    @Autowired
+    protected FirstMapper firstMapper;
+    @Autowired
     protected PropertyMapper propertyMapper;
     @Autowired
     protected PropertyRepository propertyRepository;
