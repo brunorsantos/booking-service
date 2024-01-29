@@ -36,4 +36,12 @@ public class ApplicationExceptionHandler {
         log.warn("Resource not found", ex);
         return new ApiErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage(), Collections.singletonList("Resource not found"));
     }
+
+    @ExceptionHandler(InvalidBookingException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleInvalidBookingException(InvalidBookingException ex) {
+        log.warn("Invalid booking", ex);
+        return new ApiErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.singletonList("Invalid booking"));
+    }
+
 }

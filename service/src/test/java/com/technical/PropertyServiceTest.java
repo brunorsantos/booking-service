@@ -1,6 +1,7 @@
 package com.technical;
 
 import com.technical.entity.BookingEntity;
+import com.technical.entity.BookingEntityState;
 import com.technical.entity.PropertyEntity;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.*;
@@ -10,8 +11,6 @@ import org.mockito.ArgumentCaptor;
 
 import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -25,14 +24,15 @@ public class PropertyServiceTest {
 
     private PropertyRepository propertyRepositoryMock;
 
-    private BookingService bookingServiceMock;
+    private BookingRepository bookingRepositoryMock;
 
     @BeforeEach
     void setUp() {
         var mapper = new PropertyMapperImpl();
+        var bookingMapper = new BookingMapperImpl();
         propertyRepositoryMock = mock(PropertyRepository.class);
-        bookingServiceMock = mock(BookingService.class);
-        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper, bookingServiceMock);
+        bookingRepositoryMock = mock(BookingRepository.class);
+        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper, bookingRepositoryMock, bookingMapper);
     }
 
     @Test
@@ -199,15 +199,13 @@ public class PropertyServiceTest {
         final var endDate2 = referenceDate.plusDays(15);
 
         final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
-        final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId());
-        final var booking2 = new Booking(UUID.randomUUID(), startDate2, endDate2, "Guest name2", "5", property.getId());
-
-        property.setBookings(java.util.List.of(booking1, booking2));
+        final var booking1 = new BookingEntity(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId(), BookingEntityState.ACTIVE);
+        final var booking2 = new BookingEntity(UUID.randomUUID(), startDate2, endDate2, "Guest name2", "5", property.getId(), BookingEntityState.ACTIVE);
 
         when(propertyRepositoryMock.findById(any()))
                 .thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
 
-        when(bookingServiceMock.getBookingsByPropertyId(any())).thenReturn(java.util.List.of(booking1, booking2));
+        when(bookingRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of(booking1, booking2));
 
         // Execute
         final var propertyRetrieved = subject.getPropertyWithBookings(property.getId());

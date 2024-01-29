@@ -3,7 +3,6 @@ package com.technical.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -24,13 +23,16 @@ public class BookingEntity {
 
     private UUID propertyId;
 
-    public BookingEntity(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId) {
+    private BookingEntityState bookingState;
+
+    public BookingEntity(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId, BookingEntityState bookingState) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.guestName = guestName;
         this.numberOfGuests = numberOfGuests;
         this.propertyId = propertyId;
+        this.bookingState = bookingState;
     }
 
     public BookingEntity() {
@@ -82,5 +84,13 @@ public class BookingEntity {
 
     public void setPropertyId(UUID propertyId) {
         this.propertyId = propertyId;
+    }
+
+    public BookingEntityState getBookingState() {
+        return bookingState;
+    }
+
+    public void setBookingState(BookingEntityState bookingEntityState) {
+        this.bookingState = bookingEntityState;
     }
 }

@@ -2,6 +2,7 @@ package com.technical.integration;
 
 
 import com.technical.PropertyRepository;
+import com.technical.PropertyService;
 import com.technical.PropertyServiceImpl;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Property;
@@ -21,11 +22,12 @@ public class PropertyServiceIntegrationTest extends AbstractIntegrationTest{
 
     @Autowired
     public PropertyServiceIntegrationTest(final PropertyRepository propertyRepository) {
-        subject = new PropertyServiceImpl(propertyRepository, propertyMapper, bookingService);
+        subject = new PropertyServiceImpl(propertyRepository, propertyMapper, bookingRepository, bookingMapper);
     }
 
     @BeforeEach
     void setUp() {
+
         propertyRepository.deleteAll();
     }
 

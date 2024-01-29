@@ -1,9 +1,6 @@
 package com.technical.integration;
 
-import com.technical.BookingRepository;
-import com.technical.BookingService;
-import com.technical.FirstRepository;
-import com.technical.PropertyRepository;
+import com.technical.*;
 import com.technical.dto.FirstDtoMapper;
 import com.technical.dto.PropertyDtoMapper;
 import com.technical.model.BookingMapper;
@@ -26,6 +23,8 @@ public abstract class AbstractIntegrationTest {
     protected PropertyRepository propertyRepository;
     @Autowired
     protected PropertyDtoMapper propertyDtoMapper;
+    @Autowired
+    protected PropertyService propertyService;
     @Autowired
     protected BookingService bookingService;
     @Autowired

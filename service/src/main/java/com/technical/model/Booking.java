@@ -11,14 +11,17 @@ public class Booking {
     private String guestName;
     private String numberOfGuests;
     private UUID propertyId;
+    private BookingState bookingState;
 
-    public Booking(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId) {
+
+    public Booking(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId, BookingState bookingState) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.guestName = guestName;
         this.numberOfGuests = numberOfGuests;
         this.propertyId = propertyId;
+        this.bookingState = bookingState;
     }
 
     public Booking() {
@@ -70,5 +73,13 @@ public class Booking {
 
     public void setPropertyId(UUID propertyId) {
         this.propertyId = propertyId;
+    }
+
+    public BookingState getBookingState() {
+        return bookingState;
+    }
+
+    public void setBookingState(BookingState bookingState) {
+        this.bookingState = bookingState;
     }
 }

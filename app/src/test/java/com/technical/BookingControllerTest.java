@@ -4,6 +4,7 @@ import com.technical.controller.BookingController;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.integration.AbstractIntegrationTest;
 import com.technical.model.Booking;
+import com.technical.model.BookingState;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -38,8 +39,8 @@ public class BookingControllerTest extends AbstractIntegrationTest {
         final var startDate2 = referenceDate.plusDays(9);
         final var endDate2 = referenceDate.plusDays(15);
 
-        final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", propertyId);
-        final var booking2 = new Booking(UUID.randomUUID(), startDate2, endDate2, "Guest name1", "5", propertyId);
+        final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", propertyId, BookingState.ACTIVE);
+        final var booking2 = new Booking(UUID.randomUUID(), startDate2, endDate2, "Guest name1", "5", propertyId, BookingState.ACTIVE);
 
 
 
@@ -71,7 +72,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
         final var startDate1 = referenceDate.plusDays(1);
         final var endDate1 = referenceDate.plusDays(5);
 
-        final var booking1 = new Booking(bookingId, startDate1, endDate1, "Guest name1", "2", propertyId);
+        final var booking1 = new Booking(bookingId, startDate1, endDate1, "Guest name1", "2", propertyId, BookingState.ACTIVE);
 
         when(bookingService.getBooking(any(UUID.class), any(UUID.class))).thenReturn(booking1);
 
@@ -96,4 +97,6 @@ public class BookingControllerTest extends AbstractIntegrationTest {
         mockMvc.perform(get("/properties/" + propertyId + "/bookings/" + bookingId))
                 .andExpect(status().isNotFound());
     }
+
+    //TODO: Add tests for validation errors
 }

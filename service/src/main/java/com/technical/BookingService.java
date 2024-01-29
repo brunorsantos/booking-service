@@ -10,5 +10,9 @@ public interface BookingService {
 
     Booking getBooking(UUID propertyId, UUID id);
 
+    Booking createBooking(UUID propertyId, Booking booking);
+
+    Booking updateBooking(UUID propertyId, UUID id, Booking booking);
+
 
 }

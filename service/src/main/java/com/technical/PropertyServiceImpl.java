@@ -1,6 +1,7 @@
 package com.technical;
 
 import com.technical.exception.ResourceNotFoundException;
+import com.technical.model.BookingMapper;
 import com.technical.model.Property;
 import com.technical.model.PropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +18,20 @@ public class PropertyServiceImpl implements PropertyService{
     private final PropertyRepository propertyRepository;
     private final PropertyMapper propertyMapper;
 
-    private final BookingService bookingService;
+    private final BookingRepository bookingRepository;
+    private final BookingMapper bookingMapper;
 
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyMapper propertyMapper, BookingService bookingService){
+    public PropertyServiceImpl(PropertyRepository propertyRepository,
+                               PropertyMapper propertyMapper,
+                               BookingRepository bookingRepository,
+                                 BookingMapper bookingMapper
+                               ){
         this.propertyRepository = propertyRepository;
         this.propertyMapper = propertyMapper;
-        this.bookingService = bookingService;
+        this.bookingRepository = bookingRepository;
+        this.bookingMapper = bookingMapper;
+
     }
 
     @Override
@@ -45,9 +53,12 @@ public class PropertyServiceImpl implements PropertyService{
         final var propertyEntity = propertyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
 
-        var property =  propertyMapper.toBusiness(propertyEntity);
+        var property = propertyMapper.toBusiness(propertyEntity);
 
-        final var bookings = bookingService.getBookingsByPropertyId(id);
+        final var bookingEntities = bookingRepository.findByPropertyId(id);
+        final var bookings = bookingEntities.stream()
+                .map(bookingMapper::toBusiness)
+                .collect(Collectors.toList());
         property.setBookings(bookings);
 
         return property;

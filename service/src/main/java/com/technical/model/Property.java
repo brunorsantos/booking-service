@@ -76,14 +76,20 @@ public class Property {
      * @param endDate the end date of the date range to be checked
      * @return true if the property is booked for any part of the date range, false otherwise
      */
-    public boolean isBooked(LocalDate startDate, LocalDate endDate) {
+    public boolean isBooked(LocalDate startDate, LocalDate endDate, UUID currentBookingId) {
         if (bookings == null || bookings.isEmpty()) {
             return false;
         }
 
         return bookings.stream()
+                .filter(booking -> booking.getBookingState() == BookingState.ACTIVE)
+                .filter(booking -> !booking.getId().equals(currentBookingId))
                 .anyMatch(booking -> !(!booking.getEndDate().isAfter(startDate)
                         || !booking.getStartDate().isBefore(endDate)));
 
+    }
+
+    public boolean isBooked(LocalDate startDate, LocalDate endDate) {
+        return isBooked(startDate, endDate, null);
     }
 }
