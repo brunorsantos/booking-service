@@ -225,4 +225,19 @@ public class PropertyServiceTest {
         assertThat(propertyRetrieved.getBookings().get(0).getNumberOfGuests()).isEqualTo(booking1.getNumberOfGuests());
 
     }
+
+    @Test
+    void shouldThrowExceptionWhenPropertyWhithBookingsNotFound() {
+        // Prepare
+        final var property = new Property(UUID.randomUUID(),"Address line", "City", "Owner full name");
+
+        when(propertyRepositoryMock.findById(any())).thenReturn(java.util.Optional.empty());
+
+        // Execute
+        try {
+            subject.getPropertyWithBookings(property.getId());
+        } catch (ResourceNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("Property not found");
+        }
+    }
 }

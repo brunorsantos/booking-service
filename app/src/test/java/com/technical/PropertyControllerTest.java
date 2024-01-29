@@ -116,4 +116,7 @@ public class PropertyControllerTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.message").value("Property not found"));
     }
 
+    //TODO: Add tests for validation errors
+
+
 }
