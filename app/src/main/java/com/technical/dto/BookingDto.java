@@ -1,39 +1,31 @@
-package com.technical.entity;
+package com.technical.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
-@Entity
-@Table(name = "BOOKING")
-public class BookingEntity {
-    @Id
-    @GeneratedValue
+public class BookingDto {
     private UUID id;
-
+    @NotNull(message = "Start date cannot be null")
     private LocalDate startDate;
 
+    @NotNull(message = "End date cannot be null")
     private LocalDate endDate;
 
-    //For simplicity in this test, I am not using a separate table for Guests users
+    @NotNull(message = "Guest name cannot be null")
     private String guestName;
 
+    @NotNull(message = "Number of guests cannot be null")
     private String numberOfGuests;
 
+    @NotNull(message = "Property Id of guests cannot be null")
     private UUID propertyId;
 
-    public BookingEntity(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId) {
-        this.id = id;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.guestName = guestName;
-        this.numberOfGuests = numberOfGuests;
-        this.propertyId = propertyId;
-    }
-
-    public BookingEntity() {
+    public BookingDto() {
     }
 
     public UUID getId() {
@@ -76,10 +68,12 @@ public class BookingEntity {
         this.numberOfGuests = numberOfGuests;
     }
 
+    @JsonProperty
     public UUID getPropertyId() {
         return propertyId;
     }
 
+    @JsonIgnore
     public void setPropertyId(UUID propertyId) {
         this.propertyId = propertyId;
     }

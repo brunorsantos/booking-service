@@ -2,15 +2,14 @@ package com.technical;
 
 import com.technical.entity.BookingEntity;
 import com.technical.entity.PropertyEntity;
+import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapperImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
@@ -31,19 +30,11 @@ public class BookingServiceTest {
 
     @Test
     void shouldGetBookingsByPropertyId() {
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date startDate1 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 4);
-        Date endDate1 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 5);
-        Date startDate2 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 10);
-        Date endDate2 = calendar.getTime();
+        final var referenceDate = LocalDate.now();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+        final var startDate2 = referenceDate.plusDays(9);
+        final var endDate2 = referenceDate.plusDays(15);
 
         final var propertyId = UUID.randomUUID();
         final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", propertyId);
@@ -68,5 +59,62 @@ public class BookingServiceTest {
         assertThat(bookings.get(1).getEndDate()).isEqualTo(booking2.getEndDate());
         assertThat(bookings.get(1).getGuestName()).isEqualTo(booking2.getGuestName());
         assertThat(bookings.get(1).getNumberOfGuests()).isEqualTo(booking2.getNumberOfGuests());
+    }
+
+    @Test
+    void shouldGetBooking() {
+        final var referenceDate = LocalDate.now();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+
+        final var propertyId = UUID.randomUUID();
+        final var booking = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", propertyId);
+
+        final var bookingEntity = new BookingEntity(booking.getId(), booking.getStartDate(), booking.getEndDate(), booking.getGuestName(), booking.getNumberOfGuests(), booking.getPropertyId());
+
+        when(bookingRepositoryMock.findById(booking.getId())).thenReturn(Optional.of(bookingEntity));
+
+        final var returnedBooking = subject.getBooking(propertyId, booking.getId());
+
+        assertThat(returnedBooking.getId()).isEqualTo(booking.getId());
+        assertThat(returnedBooking.getStartDate()).isEqualTo(booking.getStartDate());
+        assertThat(returnedBooking.getEndDate()).isEqualTo(booking.getEndDate());
+        assertThat(returnedBooking.getGuestName()).isEqualTo(booking.getGuestName());
+        assertThat(returnedBooking.getNumberOfGuests()).isEqualTo(booking.getNumberOfGuests());
+        assertThat(returnedBooking.getPropertyId()).isEqualTo(booking.getPropertyId());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBookingNotFound() {
+        final var propertyId = UUID.randomUUID();
+        final var bookingId = UUID.randomUUID();
+
+        when(bookingRepositoryMock.findById(bookingId)).thenReturn(Optional.empty());
+
+        try {
+            subject.getBooking(propertyId, bookingId);
+        } catch (ResourceNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("Booking not found");
+        }
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBookingFromDifferentProperty() {
+        final var referenceDate = LocalDate.now();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+
+        final var propertyId = UUID.randomUUID();
+        final var booking = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", UUID.randomUUID());
+
+        final var bookingEntity = new BookingEntity(booking.getId(), booking.getStartDate(), booking.getEndDate(), booking.getGuestName(), booking.getNumberOfGuests(), booking.getPropertyId());
+
+        when(bookingRepositoryMock.findById(booking.getId())).thenReturn(Optional.of(bookingEntity));
+
+        try {
+            subject.getBooking(propertyId, booking.getId());
+        } catch (ResourceNotFoundException e) {
+            assertThat(e.getMessage()).isEqualTo("Booking not found");
+        }
     }
 }

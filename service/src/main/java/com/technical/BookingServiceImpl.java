@@ -1,6 +1,6 @@
 package com.technical;
 
-
+import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +29,17 @@ public class BookingServiceImpl implements BookingService{
         return bookingEntities.stream()
                 .map(bookingMapper::toBusiness)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Booking getBooking(UUID propertyId, UUID id) {
+        final var bookingEntity = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!bookingEntity.getPropertyId().equals(propertyId)) {
+            throw new ResourceNotFoundException("Booking not found");
+        }
+
+        return bookingMapper.toBusiness(bookingEntity);
     }
 }

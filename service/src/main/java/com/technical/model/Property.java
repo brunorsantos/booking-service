@@ -2,6 +2,7 @@ package com.technical.model;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -75,14 +76,14 @@ public class Property {
      * @param endDate the end date of the date range to be checked
      * @return true if the property is booked for any part of the date range, false otherwise
      */
-    public boolean isBooked(Date startDate, Date endDate) {
+    public boolean isBooked(LocalDate startDate, LocalDate endDate) {
         if (bookings == null || bookings.isEmpty()) {
             return false;
         }
 
         return bookings.stream()
-                .anyMatch(booking -> !(booking.getEndDate().compareTo(startDate) <= 0
-                        || booking.getStartDate().compareTo(endDate) >= 0));
+                .anyMatch(booking -> !(!booking.getEndDate().isAfter(startDate)
+                        || !booking.getStartDate().isBefore(endDate)));
 
     }
 }

@@ -5,6 +5,7 @@ import com.technical.model.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static junit.framework.Assert.assertFalse;
@@ -25,37 +26,23 @@ public class PropertyTest {
     void isBookedShouldBeFalseWhenNoBookings() {
 
         subject.setBookings(null);
-        assertFalse(subject.isBooked(new Date(), new Date()));
+        assertFalse(subject.isBooked(LocalDate.now(), LocalDate.now()));
 
         subject.setBookings(List.of());
-        assertFalse(subject.isBooked(new Date(), new Date()));
+        assertFalse(subject.isBooked(LocalDate.now(), LocalDate.now()));
     }
 
     @Test
     void isBookedShouldReturnFalseWhenNewNoOverlap() {
 
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at1 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 4);
-        final var at4 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at5 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 2);
-        final var at7 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
-        final var at10 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 7);
-        final var at17 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
-        final var at20 = calendar.getTime();
-
-
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at4 = referenceDate.plusDays(4);
+        final var at5 = referenceDate.plusDays(5);
+        final var at7 = referenceDate.plusDays(7);
+        final var at10 = referenceDate.plusDays(10);
+        final var at17 = referenceDate.plusDays(17);
+        final var at20 = referenceDate.plusDays(20);
 
         Booking booking1 = new Booking(UUID.randomUUID(), at1, at4, "Guest name1", "2", UUID.randomUUID());
         Booking booking2 = new Booking(UUID.randomUUID(), at5, at7, "Guest name2", "2", UUID.randomUUID());
@@ -71,29 +58,16 @@ public class PropertyTest {
 
     @Test
     void isBookedShouldReturnTrueWhenOverlap() {
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at1 = calendar.getTime();
 
-        calendar.add(Calendar.DAY_OF_YEAR, 4);
-        final var at4 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at5 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at6 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
-        final var at7 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
-        final var at10 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 7);
-        final var at17 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
-        final var at20 = calendar.getTime();
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at4 = referenceDate.plusDays(4);
+        final var at5 = referenceDate.plusDays(5);
+        final var at6 = referenceDate.plusDays(5);
+        final var at7 = referenceDate.plusDays(7);
+        final var at10 = referenceDate.plusDays(10);
+        final var at17 = referenceDate.plusDays(17);
+        final var at20 = referenceDate.plusDays(20);
 
         Booking booking1 = new Booking(UUID.randomUUID(), at1, at4, "Guest name1", "2", UUID.randomUUID());
         Booking booking2 = new Booking(UUID.randomUUID(), at5, at7, "Guest name2", "2", UUID.randomUUID());

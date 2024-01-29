@@ -1,20 +1,21 @@
 package com.technical.model;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
 public class Booking {
     private UUID id;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String guestName;
     private String numberOfGuests;
     private UUID propertyId;
 
-    public Booking(UUID id, Date startDate, Date endDate, String guestName, String numberOfGuests, UUID propertyId) {
+    public Booking(UUID id, LocalDate startDate, LocalDate endDate, String guestName, String numberOfGuests, UUID propertyId) {
         this.id = id;
-        this.startDate = new Date(startDate.getTime());
-        this.endDate = new Date(endDate.getTime());
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.guestName = guestName;
         this.numberOfGuests = numberOfGuests;
         this.propertyId = propertyId;
@@ -31,20 +32,20 @@ public class Booking {
         this.id = id;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = new Date(startDate.getTime());
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = new Date(endDate.getTime());;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public String getGuestName() {

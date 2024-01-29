@@ -8,5 +8,7 @@ import java.util.UUID;
 public interface BookingService {
     List<Booking> getBookingsByPropertyId(UUID propertyId);
 
+    Booking getBooking(UUID propertyId, UUID id);
+
 
 }

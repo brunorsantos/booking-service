@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -189,18 +190,13 @@ public class PropertyServiceTest {
     @Test
     void shouldGetPropertyWithBookings() {
         // Prepare
+        final var referenceDate = LocalDate.now();
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, 1);
-        Date startDate1 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 4);
-        Date endDate1 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 5);
-        Date startDate2 = calendar.getTime();
-
-        calendar.add(Calendar.DAY_OF_YEAR, 10);
-        Date endDate2 = calendar.getTime();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+        final var startDate2 = referenceDate.plusDays(9);
+        final var endDate2 = referenceDate.plusDays(15);
 
         final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
         final var booking1 = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId());

@@ -106,7 +106,7 @@ public class PropertyControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenPropertyNotFoundOnGet() throws Exception {
+    void shouldGetNotPropertyNotFound() throws Exception {
         final var propertyId = UUID.randomUUID();
 
         when(propertyService.getProperty(any(UUID.class))).thenThrow(new ResourceNotFoundException("Property not found"));
