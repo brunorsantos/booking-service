@@ -143,5 +143,24 @@ public class BookingServiceIntegrationTest extends AbstractIntegrationTest {
         });
     }
 
+    @Test
+    void shouldDeleteBooking() {
+        final var property = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
+        final var savedProperty = propertyRepository.save(propertyMapper.toEntity(property));
+
+        final var referenceDate = LocalDate.now();
+        final var startDate = referenceDate.plusDays(1);
+        final var endDate = referenceDate.plusDays(5);
+
+        final var booking = new Booking(UUID.randomUUID(), startDate, endDate, "Guest name1", "2", savedProperty.getId(), BookingState.ACTIVE);
+        final var savedBooking = bookingRepository.save(bookingMapper.toEntity(booking));
+
+        subject.deleteBooking(savedProperty.getId(), savedBooking.getId());
+
+        final var bookings = subject.getBookingsByPropertyId(savedProperty.getId());
+
+        assertThat(bookings.size()).isEqualTo(0);
+    }
+
 
 }

@@ -44,4 +44,11 @@ public class ApplicationExceptionHandler {
         return new ApiErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.singletonList("Invalid booking"));
     }
 
+    @ExceptionHandler(ConflictedBookingException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiErrorResponse handleConflictedBookingException(ConflictedBookingException ex) {
+        log.warn("Conflicted booking", ex);
+        return new ApiErrorResponse(HttpStatus.CONFLICT, ex.getMessage(), Collections.singletonList("Conflicted booking"));
+    }
+
 }

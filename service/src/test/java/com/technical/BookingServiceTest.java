@@ -396,6 +396,51 @@ public class BookingServiceTest {
         });
     }
 
+    @Test
+    void shouldDeleteBooking() {
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at3 = referenceDate.plusDays(3);
 
 
+        final var mockedProperty = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
+        final var mockedBookingToBeDeletedEntity = new BookingEntity(UUID.randomUUID(), at1, at3, "New Guest name", "5", mockedProperty.getId(), BookingEntityState.ACTIVE);
+
+        when(bookingRepositoryMock.findById(mockedBookingToBeDeletedEntity.getId())).thenReturn(Optional.of(mockedBookingToBeDeletedEntity));
+        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+
+        subject.deleteBooking(mockedProperty.getId(), mockedBookingToBeDeletedEntity.getId());
+
+        verify(bookingRepositoryMock).deleteById(mockedBookingToBeDeletedEntity.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenBookingNotFoundOnDelete() {
+        final var propertyId = UUID.randomUUID();
+        final var bookingId = UUID.randomUUID();
+
+        when(bookingRepositoryMock.findById(bookingId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->{
+            subject.deleteBooking(propertyId, bookingId);
+        });
+
+    }
+
+    @Test
+        void shouldThrowExceptionWhenBookingFromDifferentPropertyOnDelete() {
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at3 = referenceDate.plusDays(3);
+
+        final var propertyId = UUID.randomUUID();
+        final var mockedBookingToBeDeletedEntity = new BookingEntity(UUID.randomUUID(), at1, at3, "New Guest name", "5", UUID.randomUUID(), BookingEntityState.ACTIVE);
+
+        when(bookingRepositoryMock.findById(mockedBookingToBeDeletedEntity.getId())).thenReturn(Optional.of(mockedBookingToBeDeletedEntity));
+
+        assertThrows(ResourceNotFoundException.class, () ->{
+            subject.deleteBooking(propertyId, mockedBookingToBeDeletedEntity.getId());
+        });
+
+    }
 }

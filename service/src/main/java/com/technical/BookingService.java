@@ -14,5 +14,6 @@ public interface BookingService {
 
     Booking updateBooking(UUID propertyId, UUID id, Booking booking);
 
+    void deleteBooking(UUID propertyId, UUID id);
 
 }

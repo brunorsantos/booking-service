@@ -103,4 +103,16 @@ public class BookingServiceImpl implements BookingService{
         final var savedBookingEntity = bookingRepository.save(bookingMapper.toEntity(booking));
         return bookingMapper.toBusiness(savedBookingEntity);
     }
+
+    @Override
+    public void deleteBooking(final UUID propertyId, final UUID id) {
+        final var bookingEntity = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if (!bookingEntity.getPropertyId().equals(propertyId)) {
+            throw new ResourceNotFoundException("Booking not found");
+        }
+
+        bookingRepository.deleteById(id);
+    }
 }
