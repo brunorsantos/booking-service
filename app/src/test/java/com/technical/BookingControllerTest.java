@@ -1,7 +1,6 @@
 package com.technical;
 
-import com.technical.controller.BookingController;
-import com.technical.exception.ConflictedBookingException;
+import com.technical.exception.ConflictedDateException;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.integration.AbstractIntegrationTest;
 import com.technical.model.Booking;
@@ -9,7 +8,6 @@ import com.technical.model.BookingState;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -197,7 +195,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
         final var startDate1 = referenceDate.plusDays(1);
         final var endDate1 = referenceDate.plusDays(5);
 
-        when(bookingService.updateBooking(any(UUID.class), any(UUID.class), any(Booking.class))).thenThrow(new ConflictedBookingException("Property is already booked for the selected dates"));
+        when(bookingService.updateBooking(any(UUID.class), any(UUID.class), any(Booking.class))).thenThrow(new ConflictedDateException("Property is already booked for the selected dates"));
 
         mockMvc.perform(put("/properties/" + propertyId + "/bookings/" + bookingId)
                 .contentType("application/json")

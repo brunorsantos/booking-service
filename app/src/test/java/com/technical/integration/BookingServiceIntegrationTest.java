@@ -5,7 +5,7 @@ import com.technical.BookingServiceImpl;
 import com.technical.PropertyService;
 import com.technical.entity.BookingEntity;
 import com.technical.entity.BookingEntityState;
-import com.technical.exception.ConflictedBookingException;
+import com.technical.exception.ConflictedDateException;
 import com.technical.model.Booking;
 import com.technical.model.BookingState;
 import com.technical.model.Property;
@@ -138,7 +138,7 @@ public class BookingServiceIntegrationTest extends AbstractIntegrationTest {
 
         final var updatedBooking = new Booking(savedBooking.getId(), at1, at5, "Guest name1", "2", savedProperty.getId(), BookingState.ACTIVE);
 
-        assertThrows(ConflictedBookingException.class, () ->{
+        assertThrows(ConflictedDateException.class, () ->{
             subject.updateBooking(savedProperty.getId(), savedBooking.getId(), updatedBooking);
         });
     }

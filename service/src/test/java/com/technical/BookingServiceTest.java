@@ -2,8 +2,7 @@ package com.technical;
 
 import com.technical.entity.BookingEntity;
 import com.technical.entity.BookingEntityState;
-import com.technical.exception.ConflictedBookingException;
-import com.technical.exception.InvalidBookingException;
+import com.technical.exception.ConflictedDateException;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapperImpl;
@@ -171,7 +170,7 @@ public class BookingServiceTest {
         final var property = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
         final var booking = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId(), BookingState.ACTIVE);
 
-        assertThrows(InvalidBookingException.class, () ->{
+        assertThrows(IllegalArgumentException.class, () ->{
             subject.createBooking(property.getId(), booking);
         });
     }
@@ -193,7 +192,7 @@ public class BookingServiceTest {
         final var booking = new Booking(UUID.randomUUID(), at2, at5, "Guest name1", "2", mockedProperty.getId(), BookingState.ACTIVE);
 
 
-        assertThrows(ConflictedBookingException.class, () ->{
+        assertThrows(ConflictedDateException.class, () ->{
             subject.createBooking(mockedProperty.getId(), booking);
         });
     }
@@ -206,7 +205,7 @@ public class BookingServiceTest {
 
         final var booking = new Booking(UUID.randomUUID(), at3, at5, "Guest name1", "2", UUID.randomUUID(), BookingState.CANCELLED);
 
-        assertThrows(InvalidBookingException.class, () ->{
+        assertThrows(IllegalArgumentException.class, () ->{
             subject.createBooking(UUID.randomUUID(), booking);
         });
     }
@@ -318,7 +317,7 @@ public class BookingServiceTest {
         final var booking = new Booking(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", UUID.randomUUID(), BookingState.ACTIVE);
 
 
-        assertThrows(InvalidBookingException.class, () ->{
+        assertThrows(IllegalArgumentException.class, () ->{
             subject.updateBooking(UUID.randomUUID(), booking.getId(), booking);
         });
     }
@@ -369,7 +368,7 @@ public class BookingServiceTest {
 
         when(bookingRepositoryMock.findById(booking.getId())).thenReturn(Optional.of(new BookingEntity(booking.getId(), at3, at5, "Guest name1", "2", propertyId, BookingEntityState.CANCELLED)));
 
-        assertThrows(InvalidBookingException.class, () ->{
+        assertThrows(IllegalArgumentException.class, () ->{
             subject.updateBooking(propertyId, booking.getId(), booking);
         });
     }
@@ -391,7 +390,7 @@ public class BookingServiceTest {
         when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
 
 
-        assertThrows(ConflictedBookingException.class, () ->{
+        assertThrows(ConflictedDateException.class, () ->{
             subject.updateBooking(mockedProperty.getId(), bookingToUpdate.getId(), bookingToUpdate);
         });
     }
@@ -441,6 +440,5 @@ public class BookingServiceTest {
         assertThrows(ResourceNotFoundException.class, () ->{
             subject.deleteBooking(propertyId, mockedBookingToBeDeletedEntity.getId());
         });
-
     }
 }

@@ -1,7 +1,6 @@
 package com.technical;
 
-import com.technical.exception.ConflictedBookingException;
-import com.technical.exception.InvalidBookingException;
+import com.technical.exception.ConflictedDateException;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapper;
@@ -53,17 +52,17 @@ public class BookingServiceImpl implements BookingService{
     public Booking createBooking(final UUID propertyId, final Booking booking) {
 
         if (booking.getStartDate().isAfter(booking.getEndDate())) {
-            throw new InvalidBookingException("Start date cannot be after end date");
+            throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
         if (booking.getBookingState() != BookingState.ACTIVE) {
-            throw new InvalidBookingException("New booking must be in ACTIVE state");
+            throw new IllegalArgumentException("New booking must be in ACTIVE state");
         }
 
         final var property = propertyService.getPropertyWithBookings(propertyId);
 
         if (property.isBooked(booking.getStartDate(), booking.getEndDate())) {
-            throw new ConflictedBookingException("Property is already booked for the selected dates");
+            throw new ConflictedDateException("Property is already booked for the selected dates");
         }
 
         final var bookingEntity = bookingMapper.toEntity(booking);
@@ -76,7 +75,7 @@ public class BookingServiceImpl implements BookingService{
     public Booking updateBooking(final UUID propertyId, final UUID id, final Booking booking) {
 
         if (booking.getStartDate().isAfter(booking.getEndDate())) {
-            throw new InvalidBookingException("Start date cannot be after end date");
+            throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
         final var returnedBookingEntity = bookingRepository.findById(id)
@@ -90,16 +89,17 @@ public class BookingServiceImpl implements BookingService{
 
 
         if (booking.getBookingState() == BookingState.CANCELLED && returnedBooking.getBookingState() != BookingState.ACTIVE) {
-            throw new InvalidBookingException("Only Active bookings can be cancelled");
+            throw new IllegalArgumentException("Only Active bookings can be cancelled");
         }
 
         final var property = propertyService.getPropertyWithBookings(propertyId);
 
         if (booking.getBookingState() == BookingState.ACTIVE && property.isBooked(booking.getStartDate(), booking.getEndDate(), id)) {
-            throw new ConflictedBookingException("Property is already booked for the selected dates");
+            throw new ConflictedDateException("Property is already booked for the selected dates");
         }
 
         booking.setId(id);
+        booking.setPropertyId(propertyId);
         final var savedBookingEntity = bookingRepository.save(bookingMapper.toEntity(booking));
         return bookingMapper.toBusiness(savedBookingEntity);
     }
