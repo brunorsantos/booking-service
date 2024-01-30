@@ -44,6 +44,13 @@ public class ApplicationExceptionHandler {
         return new ApiErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.singletonList("Invalid booking"));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrorResponse handleIllegalArgumentException(IllegalArgumentException ex) {
+        log.warn("Illegal argument", ex);
+        return new ApiErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.singletonList("Illegal argument"));
+    }
+
     @ExceptionHandler(ConflictedBookingException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiErrorResponse handleConflictedBookingException(ConflictedBookingException ex) {

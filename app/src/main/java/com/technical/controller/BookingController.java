@@ -2,16 +2,15 @@ package com.technical.controller;
 
 
 import com.technical.BookingService;
+import com.technical.dto.BookingDto;
+import com.technical.dto.BookingDtoMapper;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,10 +22,10 @@ public class BookingController {
 
     BookingService bookingService;
 
-    BookingMapper mapper;
+    BookingDtoMapper mapper;
 
     @Autowired
-    public BookingController(final BookingService bookingService, final BookingMapper mapper) {
+    public BookingController(final BookingService bookingService, final BookingDtoMapper mapper) {
         this.bookingService = bookingService;
         this.mapper = mapper;
     }
@@ -41,5 +40,19 @@ public class BookingController {
         return new ResponseEntity<>(bookingService.getBooking(propertyId, id), HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<Booking> createBooking(@PathVariable UUID propertyId, @RequestBody BookingDto booking) {
+        return new ResponseEntity<>(bookingService.createBooking(propertyId, mapper.toBusiness(booking)), HttpStatus.CREATED);
+    }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Booking> updateBooking(@PathVariable UUID propertyId, @PathVariable UUID id, @RequestBody BookingDto booking) {
+        return new ResponseEntity<>(bookingService.updateBooking(propertyId, id, mapper.toBusiness(booking)), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBooking(@PathVariable UUID propertyId, @PathVariable UUID id) {
+        bookingService.deleteBooking(propertyId, id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
