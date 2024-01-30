@@ -3,6 +3,7 @@ package com.technical.integration;
 import com.technical.*;
 import com.technical.dto.FirstDtoMapper;
 import com.technical.dto.PropertyDtoMapper;
+import com.technical.model.BlockMapper;
 import com.technical.model.BookingMapper;
 import com.technical.model.FirstMapper;
 import com.technical.model.PropertyMapper;
@@ -31,4 +32,8 @@ public abstract class AbstractIntegrationTest {
     protected BookingMapper bookingMapper;
     @Autowired
     protected BookingRepository bookingRepository;
+    @Autowired
+    protected BlockMapper blockMapper;
+    @Autowired
+    protected BlockRepository blockRepository;
 }

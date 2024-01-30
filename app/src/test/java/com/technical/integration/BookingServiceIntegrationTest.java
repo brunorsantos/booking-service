@@ -54,7 +54,7 @@ public class BookingServiceIntegrationTest extends AbstractIntegrationTest {
         final var bookingEntities = List.of(new BookingEntity(booking1.getId(), booking1.getStartDate(), booking1.getEndDate(), booking1.getGuestName(), booking1.getNumberOfGuests(), booking1.getPropertyId(), BookingEntityState.ACTIVE),
                 new BookingEntity(booking2.getId(), booking2.getStartDate(), booking2.getEndDate(), booking2.getGuestName(), booking2.getNumberOfGuests(), booking2.getPropertyId(), BookingEntityState.ACTIVE));
 
-        var a = bookingRepository.saveAll(bookingEntities);
+        bookingRepository.saveAll(bookingEntities);
 
         final var bookings = subject.getBookingsByPropertyId(property.getId());
 
