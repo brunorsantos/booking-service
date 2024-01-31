@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.technical.util.Logging.addLoggingContextId;
+
 @RestController
 @RequestMapping("/properties/{propertyId}/bookings")
 @Slf4j
@@ -34,6 +36,7 @@ public class BookingController {
 
     @GetMapping
     public ResponseEntity<List<BookingDto>> getAllBookings(@PathVariable UUID propertyId) {
+        addLoggingContextId();
         final var bookings = bookingService.getBookingsByPropertyId(propertyId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -42,17 +45,20 @@ public class BookingController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BookingDto> getBooking(@PathVariable UUID propertyId, @PathVariable UUID id) {
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(bookingService.getBooking(propertyId, id)), HttpStatus.OK);
     }
 
 
     @PostMapping
     public ResponseEntity<Booking> createBooking(@PathVariable UUID propertyId, @Valid @RequestBody BookingDto booking) {
+        addLoggingContextId();
         return new ResponseEntity<>(bookingService.createBooking(propertyId, mapper.toBusiness(booking)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Booking> updateBooking(@PathVariable UUID propertyId, @PathVariable UUID id, @Valid @RequestBody BookingDto booking) {
+        addLoggingContextId();
         return new ResponseEntity<>(bookingService.updateBooking(propertyId, id, mapper.toBusiness(booking)), HttpStatus.OK);
     }
 

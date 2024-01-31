@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.technical.util.Logging.addLoggingContextId;
+
 @RestController
 @RequestMapping("/properties/{propertyId}/blocks")
 @Slf4j
@@ -31,6 +33,7 @@ public class BlockController {
 
     @GetMapping
     public ResponseEntity<List<BlockDto>> getAllBlocks(@PathVariable UUID propertyId) {
+        addLoggingContextId();
         final var blocks = blockService.getBlocksByPropertyId(propertyId).stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());
@@ -39,16 +42,19 @@ public class BlockController {
 
     @GetMapping("/{id}")
     public ResponseEntity<BlockDto> getBlock(@PathVariable UUID propertyId, @PathVariable UUID id) {
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(blockService.getBlock(propertyId, id)), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<BlockDto> createBlock(@PathVariable UUID propertyId, @Valid @RequestBody BlockDto block) {
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(blockService.createBlock(propertyId, mapper.toBusiness(block))), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<BlockDto> updateBlock(@PathVariable UUID propertyId, @PathVariable UUID id, @Valid @RequestBody BlockDto block) {
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(blockService.updateBlock(propertyId, id, mapper.toBusiness(block))), HttpStatus.OK);
     }
 

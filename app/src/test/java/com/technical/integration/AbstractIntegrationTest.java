@@ -1,11 +1,9 @@
 package com.technical.integration;
 
 import com.technical.*;
-import com.technical.dto.FirstDtoMapper;
 import com.technical.dto.PropertyDtoMapper;
 import com.technical.model.BlockMapper;
 import com.technical.model.BookingMapper;
-import com.technical.model.FirstMapper;
 import com.technical.model.PropertyMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

@@ -42,24 +42,25 @@ public class PropertyController {
 
     @GetMapping("/{id}")
     public ResponseEntity<PropertyDto> getProperty(@PathVariable UUID id) {
-        addLoggingContextId(id);
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(propertyService.getProperty(id)), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<PropertyDto> createProperty(@Valid @RequestBody Property property) {
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(propertyService.createProperty(property)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<PropertyDto> updateProperty(@PathVariable UUID id, @Valid @RequestBody Property property) {
-        addLoggingContextId(id);
+        addLoggingContextId();
         return new ResponseEntity<>(mapper.toDto(propertyService.updateProperty(id, property)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
-        addLoggingContextId(id);
+        addLoggingContextId();
         propertyService.deleteProperty(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
