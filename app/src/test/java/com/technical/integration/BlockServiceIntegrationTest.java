@@ -3,8 +3,6 @@ package com.technical.integration;
 import com.technical.*;
 
 import com.technical.entity.BlockEntity;
-import com.technical.entity.BookingEntity;
-import com.technical.entity.BookingEntityState;
 import com.technical.exception.ConflictedDateException;
 import com.technical.model.Block;
 import com.technical.model.Booking;
