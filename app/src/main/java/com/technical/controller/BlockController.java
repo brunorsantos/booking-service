@@ -3,6 +3,7 @@ package com.technical.controller;
 import com.technical.BlockService;
 import com.technical.dto.BlockDto;
 import com.technical.dto.BlockDtoMapper;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,12 +43,12 @@ public class BlockController {
     }
 
     @PostMapping
-    public ResponseEntity<BlockDto> createBlock(@PathVariable UUID propertyId, @RequestBody BlockDto block) {
+    public ResponseEntity<BlockDto> createBlock(@PathVariable UUID propertyId, @Valid @RequestBody BlockDto block) {
         return new ResponseEntity<>(mapper.toDto(blockService.createBlock(propertyId, mapper.toBusiness(block))), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BlockDto> updateBlock(@PathVariable UUID propertyId, @PathVariable UUID id, @RequestBody BlockDto block) {
+    public ResponseEntity<BlockDto> updateBlock(@PathVariable UUID propertyId, @PathVariable UUID id, @Valid @RequestBody BlockDto block) {
         return new ResponseEntity<>(mapper.toDto(blockService.updateBlock(propertyId, id, mapper.toBusiness(block))), HttpStatus.OK);
     }
 

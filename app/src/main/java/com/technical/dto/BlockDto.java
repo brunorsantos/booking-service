@@ -17,7 +17,6 @@ public class BlockDto {
     @NotNull(message = "End date cannot be null")
     private LocalDate endDate;
 
-    @NotNull(message = "Property Id cannot be null")
     private UUID propertyId;
 
     @NotNull(message = "Reason cannot be null")
@@ -51,10 +50,12 @@ public class BlockDto {
         this.endDate = endDate;
     }
 
+    @JsonProperty
     public UUID getPropertyId() {
         return propertyId;
     }
 
+    @JsonIgnore
     public void setPropertyId(UUID propertyId) {
         this.propertyId = propertyId;
     }

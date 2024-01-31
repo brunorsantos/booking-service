@@ -22,16 +22,19 @@ public class BookingDto {
     @NotNull(message = "Number of guests cannot be null")
     private String numberOfGuests;
 
-    @NotNull(message = "Property Id cannot be null")
     private UUID propertyId;
+
+    @NotNull(message = "State Id cannot be null")
+    private BookingStateDto bookingState;
 
     public BookingDto() {
     }
 
+    @JsonProperty
     public UUID getId() {
         return id;
     }
-
+    @JsonIgnore
     public void setId(UUID id) {
         this.id = id;
     }
@@ -76,5 +79,13 @@ public class BookingDto {
     @JsonIgnore
     public void setPropertyId(UUID propertyId) {
         this.propertyId = propertyId;
+    }
+
+    public BookingStateDto getBookingState() {
+        return bookingState;
+    }
+
+    public void setBookingState(BookingStateDto bookingState) {
+        this.bookingState = bookingState;
     }
 }

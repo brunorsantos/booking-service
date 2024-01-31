@@ -113,7 +113,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(post("/properties/" + propertyId + "/bookings")
                 .contentType("application/json")
-                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\"}"))
+                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\", \"bookingState\": \"ACTIVE\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.startDate").value(startDate1.toString()))
                 .andExpect(jsonPath("$.endDate").value(endDate1.toString()))
@@ -139,7 +139,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(put("/properties/" + propertyId + "/bookings/" + bookingId)
                 .contentType("application/json")
-                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\"}"))
+                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\", \"bookingState\": \"ACTIVE\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.startDate").value(startDate1.toString()))
                 .andExpect(jsonPath("$.endDate").value(endDate1.toString()))
@@ -163,7 +163,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(put("/properties/" + propertyId + "/bookings/" + bookingId)
                 .contentType("application/json")
-                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\"}"))
+                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\", \"bookingState\": \"ACTIVE\"}"))
                 .andExpect(status().isNotFound());
     }
 
@@ -181,7 +181,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(put("/properties/" + propertyId + "/bookings/" + bookingId)
                 .contentType("application/json")
-                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\"}"))
+                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\", \"bookingState\": \"ACTIVE\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -199,7 +199,7 @@ public class BookingControllerTest extends AbstractIntegrationTest {
 
         mockMvc.perform(put("/properties/" + propertyId + "/bookings/" + bookingId)
                 .contentType("application/json")
-                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\"}"))
+                .content("{\"startDate\": \"" + startDate1 + "\", \"endDate\": \"" + endDate1 + "\", \"guestName\": \"Guest name1\", \"numberOfGuests\": \"2\", \"bookingState\": \"ACTIVE\"}"))
                 .andExpect(status().isConflict());
     }
 

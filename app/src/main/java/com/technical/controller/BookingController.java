@@ -6,6 +6,7 @@ import com.technical.dto.BookingDto;
 import com.technical.dto.BookingDtoMapper;
 import com.technical.model.Booking;
 import com.technical.model.BookingMapper;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,12 +47,12 @@ public class BookingController {
 
 
     @PostMapping
-    public ResponseEntity<Booking> createBooking(@PathVariable UUID propertyId, @RequestBody BookingDto booking) {
+    public ResponseEntity<Booking> createBooking(@PathVariable UUID propertyId, @Valid @RequestBody BookingDto booking) {
         return new ResponseEntity<>(bookingService.createBooking(propertyId, mapper.toBusiness(booking)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Booking> updateBooking(@PathVariable UUID propertyId, @PathVariable UUID id, @RequestBody BookingDto booking) {
+    public ResponseEntity<Booking> updateBooking(@PathVariable UUID propertyId, @PathVariable UUID id, @Valid @RequestBody BookingDto booking) {
         return new ResponseEntity<>(bookingService.updateBooking(propertyId, id, mapper.toBusiness(booking)), HttpStatus.OK);
     }
 

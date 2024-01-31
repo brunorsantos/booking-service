@@ -5,6 +5,7 @@ import com.technical.PropertyService;
 import com.technical.dto.PropertyDto;
 import com.technical.dto.PropertyDtoMapper;
 import com.technical.model.Property;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,12 +47,12 @@ public class PropertyController {
     }
 
     @PostMapping
-    public ResponseEntity<PropertyDto> createProperty(@RequestBody Property property) {
+    public ResponseEntity<PropertyDto> createProperty(@Valid @RequestBody Property property) {
         return new ResponseEntity<>(mapper.toDto(propertyService.createProperty(property)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PropertyDto> updateProperty(@PathVariable UUID id, @RequestBody Property property) {
+    public ResponseEntity<PropertyDto> updateProperty(@PathVariable UUID id, @Valid @RequestBody Property property) {
         addLoggingContextId(id);
         return new ResponseEntity<>(mapper.toDto(propertyService.updateProperty(id, property)), HttpStatus.OK);
     }
