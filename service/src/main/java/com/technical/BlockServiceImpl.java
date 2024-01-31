@@ -52,10 +52,14 @@ public class BlockServiceImpl implements BlockService{
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
 
-        final var property = propertyService.getPropertyWithBookings(propertyId);
+        final var property = propertyService.getPropertyEnriched(propertyId);
 
         if (property.isBooked(block.getStartDate(), block.getEndDate())) {
             throw new ConflictedDateException("Property is already booked for the selected dates");
+        }
+
+        if (property.isBlocked(block.getStartDate(), block.getEndDate())) {
+            throw new ConflictedDateException("Property is already blocked for the selected dates");
         }
 
         block.setPropertyId(propertyId);
@@ -77,10 +81,14 @@ public class BlockServiceImpl implements BlockService{
             throw new ResourceNotFoundException("Block not found");
         }
 
-        final var property = propertyService.getPropertyWithBookings(propertyId);
+        final var property = propertyService.getPropertyEnriched(propertyId);
 
         if (property.isBooked(block.getStartDate(), block.getEndDate())) {
             throw new ConflictedDateException("Property is already booked for the selected dates");
+        }
+
+        if (property.isBlocked(block.getStartDate(), block.getEndDate(), id)) {
+            throw new ConflictedDateException("Property is already blocked for the selected dates");
         }
 
         block.setId(id);

@@ -1,6 +1,8 @@
 package com.technical;
 
+import com.technical.exception.ConflictedDateException;
 import com.technical.exception.ResourceNotFoundException;
+import com.technical.model.BlockMapper;
 import com.technical.model.BookingMapper;
 import com.technical.model.Property;
 import com.technical.model.PropertyMapper;
@@ -21,17 +23,24 @@ public class PropertyServiceImpl implements PropertyService{
     private final BookingRepository bookingRepository;
     private final BookingMapper bookingMapper;
 
+    private final BlockRepository blockRepository;
+
+    private final BlockMapper blockMapper;
+
     @Autowired
     public PropertyServiceImpl(PropertyRepository propertyRepository,
                                PropertyMapper propertyMapper,
                                BookingRepository bookingRepository,
-                                 BookingMapper bookingMapper
+                                 BookingMapper bookingMapper,
+                                 BlockRepository blockRepository,
+                                    BlockMapper blockMapper
                                ){
         this.propertyRepository = propertyRepository;
         this.propertyMapper = propertyMapper;
         this.bookingRepository = bookingRepository;
         this.bookingMapper = bookingMapper;
-
+        this.blockRepository = blockRepository;
+        this.blockMapper = blockMapper;
     }
 
     @Override
@@ -49,17 +58,21 @@ public class PropertyServiceImpl implements PropertyService{
     }
 
     @Override
-    public Property getPropertyWithBookings(UUID id) {
-        final var propertyEntity = propertyRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Property not found"));
+    public Property getPropertyEnriched(UUID id) {
 
-        var property = propertyMapper.toBusiness(propertyEntity);
+        var property = getProperty(id);
 
         final var bookingEntities = bookingRepository.findByPropertyId(id);
         final var bookings = bookingEntities.stream()
                 .map(bookingMapper::toBusiness)
                 .collect(Collectors.toList());
         property.setBookings(bookings);
+
+        final var blockEntities = blockRepository.findByPropertyId(id);
+        final var blocks = blockEntities.stream()
+                .map(blockMapper::toBusiness)
+                .collect(Collectors.toList());
+        property.setBlocks(blocks);
 
         return property;
     }
@@ -75,12 +88,18 @@ public class PropertyServiceImpl implements PropertyService{
 
     @Override
     public void deleteProperty(final UUID id) {
-        //TODO: check bookings and blocks before deleting
-        if (propertyRepository.existsById(id)) {
-            propertyRepository.deleteById(id);
-            return;
+
+        var property = getPropertyEnriched(id);
+
+        if (!property.getBookings().isEmpty()) {
+            throw new ConflictedDateException("Property has bookings and cannot be deleted");
         }
-        throw new ResourceNotFoundException("Property not found");
+
+        if (!property.getBlocks().isEmpty()) {
+            throw new ConflictedDateException("Property has blocks and cannot be deleted");
+        }
+
+        propertyRepository.deleteById(id);
     }
 
     @Override

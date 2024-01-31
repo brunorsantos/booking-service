@@ -2,7 +2,6 @@ package com.technical.integration;
 
 
 import com.technical.PropertyRepository;
-import com.technical.PropertyService;
 import com.technical.PropertyServiceImpl;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.Property;
@@ -22,7 +21,7 @@ public class PropertyServiceIntegrationTest extends AbstractIntegrationTest{
 
     @Autowired
     public PropertyServiceIntegrationTest(final PropertyRepository propertyRepository) {
-        subject = new PropertyServiceImpl(propertyRepository, propertyMapper, bookingRepository, bookingMapper);
+        subject = new PropertyServiceImpl(propertyRepository, propertyMapper, bookingRepository, bookingMapper, blockRepository, blockMapper);
     }
 
     @BeforeEach
@@ -53,7 +52,7 @@ public class PropertyServiceIntegrationTest extends AbstractIntegrationTest{
 
         final var propertyEntity = propertyRepository.save(propertyMapper.toEntity(property));
 
-        final var propertyBusiness = subject.getPropertyWithBookings(propertyEntity.getId());
+        final var propertyBusiness = subject.getPropertyEnriched(propertyEntity.getId());
 
         assertThat(propertyBusiness.getAddress()).isEqualTo(propertyEntity.getAddress());
         assertThat(propertyBusiness.getCity()).isEqualTo(propertyEntity.getCity());

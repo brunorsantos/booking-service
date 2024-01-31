@@ -59,10 +59,14 @@ public class BookingServiceImpl implements BookingService{
             throw new IllegalArgumentException("New booking must be in ACTIVE state");
         }
 
-        final var property = propertyService.getPropertyWithBookings(propertyId);
+        final var property = propertyService.getPropertyEnriched(propertyId);
 
         if (property.isBooked(booking.getStartDate(), booking.getEndDate())) {
             throw new ConflictedDateException("Property is already booked for the selected dates");
+        }
+
+        if (property.isBlocked(booking.getStartDate(), booking.getEndDate())) {
+            throw new ConflictedDateException("Property is blocked for the selected dates");
         }
 
         final var bookingEntity = bookingMapper.toEntity(booking);
@@ -87,15 +91,18 @@ public class BookingServiceImpl implements BookingService{
             throw new ResourceNotFoundException("Booking not found");
         }
 
-
         if (booking.getBookingState() == BookingState.CANCELLED && returnedBooking.getBookingState() != BookingState.ACTIVE) {
             throw new IllegalArgumentException("Only Active bookings can be cancelled");
         }
 
-        final var property = propertyService.getPropertyWithBookings(propertyId);
+        final var property = propertyService.getPropertyEnriched(propertyId);
 
         if (booking.getBookingState() == BookingState.ACTIVE && property.isBooked(booking.getStartDate(), booking.getEndDate(), id)) {
             throw new ConflictedDateException("Property is already booked for the selected dates");
+        }
+
+        if (property.isBlocked(booking.getStartDate(), booking.getEndDate())) {
+            throw new ConflictedDateException("Property is blocked for the selected dates");
         }
 
         booking.setId(id);

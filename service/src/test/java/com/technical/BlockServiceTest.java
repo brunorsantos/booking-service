@@ -131,13 +131,13 @@ public class BlockServiceTest {
         final var mockedBooking = new Booking(UUID.randomUUID(), at1, at3, "Guest name1", "2", mockedProperty.getId(), BookingState.ACTIVE);
         mockedProperty.setBookings(List.of(mockedBooking));
 
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
 
         final var block = new Block(UUID.randomUUID(), at3, at5, mockedProperty.getId(), "reason");
         final var bookingArgumentCaptor = ArgumentCaptor.forClass(BlockEntity.class);
 
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
         //Execute
         subject.createBlock(mockedProperty.getId(), block);
@@ -180,7 +180,28 @@ public class BlockServiceTest {
         final var mockedBooking = new Booking(UUID.randomUUID(), at1, at3, "Guest name1", "2", mockedProperty.getId(), BookingState.ACTIVE);
         mockedProperty.setBookings(List.of(mockedBooking));
 
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
+
+        final var block = new Block(UUID.randomUUID(), at2, at5, mockedProperty.getId(), "reason");
+
+        assertThrows(ConflictedDateException.class, () ->{
+            subject.createBlock(mockedProperty.getId(), block);
+        });
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPropertyIsBlocked() {
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at3 = referenceDate.plusDays(3);
+        final var at2 = referenceDate.plusDays(2);
+        final var at5 = referenceDate.plusDays(5);
+
+        final var mockedProperty = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
+        final var mockedBlock = new Block(UUID.randomUUID(), at1, at3, mockedProperty.getId(), "reason");
+        mockedProperty.setBlocks(List.of(mockedBlock));
+
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
         final var block = new Block(UUID.randomUUID(), at2, at5, mockedProperty.getId(), "reason");
 
@@ -199,11 +220,13 @@ public class BlockServiceTest {
         final var mockedProperty = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
 
         final var blockToUpdate = new Block(UUID.randomUUID(), at3, at5, mockedProperty.getId(), "reason");
+
+        mockedProperty.setBlocks(List.of(blockToUpdate));
         final var mockedBlockToBeUpdatedEntity = new BlockEntity(blockToUpdate.getId(), at1, blockToUpdate.getEndDate(), blockToUpdate.getPropertyId(), "old reason");
 
 
         when(blockRepositoryMock.findById(blockToUpdate.getId())).thenReturn(Optional.of(mockedBlockToBeUpdatedEntity));
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
         final var blockEntityArgumentCaptor = ArgumentCaptor.forClass(BlockEntity.class);
 
@@ -284,7 +307,30 @@ public class BlockServiceTest {
         mockedProperty.setBookings(List.of(otherBooking));
 
         when(blockRepositoryMock.findById(blockToUpdate.getId())).thenReturn(Optional.of(mockedBlockToBeUpdatedEntity));
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
+
+
+        assertThrows(ConflictedDateException.class, () ->{
+            subject.updateBlock(mockedProperty.getId(), blockToUpdate.getId(), blockToUpdate);
+        });
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPropertyIsBlockedOnUpdate() {
+        final var referenceDate = LocalDate.now();
+        final var at1 = referenceDate.plusDays(1);
+        final var at3 = referenceDate.plusDays(3);
+        final var at5 = referenceDate.plusDays(5);
+
+        final var mockedProperty = new Property(UUID.randomUUID(), "Address line", "City", "Robert Johnson");
+        final var blockToUpdate = new Block(UUID.randomUUID(), at1, at5, mockedProperty.getId(), "reason");
+        final var mockedBlockToBeUpdatedEntity = new BlockEntity(blockToUpdate.getId(), at3, at5, blockToUpdate.getPropertyId(), "old reason");
+
+        final var mockedBlock = new Block(UUID.randomUUID(), at1, at3, mockedProperty.getId(), "reason");
+        mockedProperty.setBlocks(List.of(mockedBlock));
+
+        when(blockRepositoryMock.findById(blockToUpdate.getId())).thenReturn(Optional.of(mockedBlockToBeUpdatedEntity));
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
 
         assertThrows(ConflictedDateException.class, () ->{
@@ -302,7 +348,7 @@ public class BlockServiceTest {
         final var mockedBlockToBeDeletedEntity = new BlockEntity(UUID.randomUUID(), at1, at3,  mockedProperty.getId(), "reason");
 
         when(blockRepositoryMock.findById(mockedBlockToBeDeletedEntity.getId())).thenReturn(Optional.of(mockedBlockToBeDeletedEntity));
-        when(propertyServiceMock.getPropertyWithBookings(mockedProperty.getId())).thenReturn(mockedProperty);
+        when(propertyServiceMock.getPropertyEnriched(mockedProperty.getId())).thenReturn(mockedProperty);
 
         subject.deleteBlock(mockedProperty.getId(), mockedBlockToBeDeletedEntity.getId());
 

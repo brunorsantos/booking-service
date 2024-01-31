@@ -15,6 +15,8 @@ public class Property {
     private String ownerName;
     private List<Booking> bookings;
 
+    private List<Block> blocks;
+
     public Property(UUID id, String address, String city, String ownerName) {
         this.id = id;
         this.address = address;
@@ -65,6 +67,14 @@ public class Property {
         this.bookings = bookings;
     }
 
+    public List<Block> getBlocks() {
+        return blocks;
+    }
+
+    public void setBlocks(List<Block> blocks) {
+        this.blocks = blocks;
+    }
+
     /**
      * Checks if the property is booked for a given date range.
      *
@@ -91,5 +101,20 @@ public class Property {
 
     public boolean isBooked(LocalDate startDate, LocalDate endDate) {
         return isBooked(startDate, endDate, null);
+    }
+
+    public boolean isBlocked(LocalDate startDate, LocalDate endDate, UUID currentBlockId) {
+        if (blocks == null || blocks.isEmpty()) {
+            return false;
+        }
+
+        return blocks.stream()
+                .filter(block -> !block.getId().equals(currentBlockId))
+                .anyMatch(block -> !(!block.getEndDate().isAfter(startDate)
+                        || !block.getStartDate().isBefore(endDate)));
+    }
+
+    public boolean isBlocked(LocalDate startDate, LocalDate endDate) {
+        return isBlocked(startDate, endDate, null);
     }
 }

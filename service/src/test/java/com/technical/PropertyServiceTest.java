@@ -1,8 +1,10 @@
 package com.technical;
 
+import com.technical.entity.BlockEntity;
 import com.technical.entity.BookingEntity;
 import com.technical.entity.BookingEntityState;
 import com.technical.entity.PropertyEntity;
+import com.technical.exception.ConflictedDateException;
 import com.technical.exception.ResourceNotFoundException;
 import com.technical.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +17,7 @@ import java.util.UUID;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -26,13 +29,17 @@ public class PropertyServiceTest {
 
     private BookingRepository bookingRepositoryMock;
 
+    private BlockRepository blockRepositoryMock;
+
     @BeforeEach
     void setUp() {
         var mapper = new PropertyMapperImpl();
         var bookingMapper = new BookingMapperImpl();
+        var blockMapper = new BlockMapperImpl();
         propertyRepositoryMock = mock(PropertyRepository.class);
         bookingRepositoryMock = mock(BookingRepository.class);
-        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper, bookingRepositoryMock, bookingMapper);
+        blockRepositoryMock = mock(BlockRepository.class);
+        subject = new PropertyServiceImpl(propertyRepositoryMock, mapper, bookingRepositoryMock, bookingMapper, blockRepositoryMock, blockMapper);
     }
 
     @Test
@@ -132,14 +139,62 @@ public class PropertyServiceTest {
     @Test
     void shouldDeleteProperty() {
         // Prepare
-        final var propertyId = UUID.randomUUID();
-        when(propertyRepositoryMock.existsById(any())).thenReturn(true);
+        final var property = new Property(UUID.randomUUID(),"Address line", "City", "Owner full name");
+
+        when(propertyRepositoryMock.findById(any())).thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
 
         // Execute
-        subject.deleteProperty(propertyId);
+        subject.deleteProperty(property.getId());
 
         // Assert
-        verify(propertyRepositoryMock).deleteById(propertyId);
+        verify(propertyRepositoryMock).deleteById(property.getId());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPropertyHasBookingsOnDelete() {
+        // Prepare
+        final var referenceDate = LocalDate.now();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+        final var startDate2 = referenceDate.plusDays(9);
+        final var endDate2 = referenceDate.plusDays(15);
+
+        final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
+        final var booking1 = new BookingEntity(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId(), BookingEntityState.ACTIVE);
+        final var booking2 = new BookingEntity(UUID.randomUUID(), startDate2, endDate2, "Guest name2", "5", property.getId(), BookingEntityState.ACTIVE);
+
+
+        when(propertyRepositoryMock.findById(any()))
+                .thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
+
+        when(bookingRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of(booking1, booking2));
+        when(blockRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of());
+        // Execute
+
+        assertThrows(ConflictedDateException.class, () -> subject.deleteProperty(property.getId()));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenPropertyHasBlocksOnDelete() {
+        // Prepare
+        final var referenceDate = LocalDate.now();
+        final var startDate1 = referenceDate.plusDays(1);
+        final var endDate1 = referenceDate.plusDays(5);
+        final var startDate2 = referenceDate.plusDays(9);
+        final var endDate2 = referenceDate.plusDays(15);
+
+        final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
+        final var block1 = new BlockEntity(UUID.randomUUID(), startDate1, endDate1, property.getId(),"Block reason 1");
+        final var block2 = new BlockEntity(UUID.randomUUID(), startDate2, endDate2, property.getId(),"Block reason 2");
+
+        when(propertyRepositoryMock.findById(any()))
+                .thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
+
+        when(bookingRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of());
+        when(blockRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of(block1, block2));
+        // Execute
+
+        assertThrows(ConflictedDateException.class, () -> subject.deleteProperty(property.getId()));
     }
 
     @Test
@@ -188,11 +243,9 @@ public class PropertyServiceTest {
     }
 
     @Test
-    void shouldGetPropertyWithBookings() {
+    void shouldGetPropertyWithBookingsAndBlocks() {
         // Prepare
         final var referenceDate = LocalDate.now();
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 1);
         final var startDate1 = referenceDate.plusDays(1);
         final var endDate1 = referenceDate.plusDays(5);
         final var startDate2 = referenceDate.plusDays(9);
@@ -201,14 +254,17 @@ public class PropertyServiceTest {
         final var property = new Property(UUID.randomUUID(), "Address line", "City", "Owner full name");
         final var booking1 = new BookingEntity(UUID.randomUUID(), startDate1, endDate1, "Guest name1", "2", property.getId(), BookingEntityState.ACTIVE);
         final var booking2 = new BookingEntity(UUID.randomUUID(), startDate2, endDate2, "Guest name2", "5", property.getId(), BookingEntityState.ACTIVE);
+        final var block1 = new BlockEntity(UUID.randomUUID(), startDate1, endDate1, property.getId(),"Block reason 1");
+        final var block2 = new BlockEntity(UUID.randomUUID(), startDate2, endDate2, property.getId(),"Block reason 2");
 
         when(propertyRepositoryMock.findById(any()))
                 .thenReturn(java.util.Optional.of(new PropertyEntity(property.getId(), property.getAddress(), property.getCity(), property.getOwnerName())));
 
         when(bookingRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of(booking1, booking2));
+        when(blockRepositoryMock.findByPropertyId(any())).thenReturn(java.util.List.of(block1, block2));
 
         // Execute
-        final var propertyRetrieved = subject.getPropertyWithBookings(property.getId());
+        final var propertyRetrieved = subject.getPropertyEnriched(property.getId());
 
         // Assert
         assertThat(propertyRetrieved.getAddress()).isEqualTo(property.getAddress());
@@ -221,7 +277,10 @@ public class PropertyServiceTest {
         assertThat(propertyRetrieved.getBookings().get(0).getEndDate()).isEqualTo(booking1.getEndDate());
         assertThat(propertyRetrieved.getBookings().get(0).getGuestName()).isEqualTo(booking1.getGuestName());
         assertThat(propertyRetrieved.getBookings().get(0).getNumberOfGuests()).isEqualTo(booking1.getNumberOfGuests());
-
+        assertThat(propertyRetrieved.getBlocks().get(0).getId()).isEqualTo(block1.getId());
+        assertThat(propertyRetrieved.getBlocks().get(0).getStartDate()).isEqualTo(block1.getStartDate());
+        assertThat(propertyRetrieved.getBlocks().get(0).getEndDate()).isEqualTo(block1.getEndDate());
+        assertThat(propertyRetrieved.getBlocks().get(0).getReason()).isEqualTo(block1.getReason());
     }
 
     @Test
@@ -232,10 +291,6 @@ public class PropertyServiceTest {
         when(propertyRepositoryMock.findById(any())).thenReturn(java.util.Optional.empty());
 
         // Execute
-        try {
-            subject.getPropertyWithBookings(property.getId());
-        } catch (ResourceNotFoundException e) {
-            assertThat(e.getMessage()).isEqualTo("Property not found");
-        }
+        assertThrows(ResourceNotFoundException.class, () -> subject.getPropertyEnriched(property.getId()));
     }
 }
