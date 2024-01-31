@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/properties/{propertyId}/bookings")
@@ -31,14 +32,18 @@ public class BookingController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Booking>> getAllBookings(@PathVariable UUID propertyId) {
-        return new ResponseEntity<>(bookingService.getBookingsByPropertyId(propertyId), HttpStatus.OK);
+    public ResponseEntity<List<BookingDto>> getAllBookings(@PathVariable UUID propertyId) {
+        final var bookings = bookingService.getBookingsByPropertyId(propertyId).stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Booking> getBooking(@PathVariable UUID propertyId, @PathVariable UUID id) {
-        return new ResponseEntity<>(bookingService.getBooking(propertyId, id), HttpStatus.OK);
+    public ResponseEntity<BookingDto> getBooking(@PathVariable UUID propertyId, @PathVariable UUID id) {
+        return new ResponseEntity<>(mapper.toDto(bookingService.getBooking(propertyId, id)), HttpStatus.OK);
     }
+
 
     @PostMapping
     public ResponseEntity<Booking> createBooking(@PathVariable UUID propertyId, @RequestBody BookingDto booking) {

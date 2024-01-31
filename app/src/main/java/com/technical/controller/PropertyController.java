@@ -2,6 +2,7 @@ package com.technical.controller;
 
 
 import com.technical.PropertyService;
+import com.technical.dto.PropertyDto;
 import com.technical.dto.PropertyDtoMapper;
 import com.technical.model.Property;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import static com.technical.util.Logging.addLoggingContextId;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/properties")
@@ -29,29 +31,33 @@ public class PropertyController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Property>> getAllProperties() {
-        return new ResponseEntity<>(propertyService.getAllProperties(), HttpStatus.OK);
+    public ResponseEntity<List<PropertyDto>> getAllProperties() {
+        final var properties = propertyService.getAllProperties().stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(properties, HttpStatus.OK);
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Property> getProperty(@PathVariable UUID id) {
+    public ResponseEntity<PropertyDto> getProperty(@PathVariable UUID id) {
         addLoggingContextId(id);
-        return new ResponseEntity<>(propertyService.getProperty(id), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.toDto(propertyService.getProperty(id)), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Property> createProperty(@RequestBody Property property) {
-        return new ResponseEntity<>(propertyService.createProperty(property), HttpStatus.CREATED);
+    public ResponseEntity<PropertyDto> createProperty(@RequestBody Property property) {
+        return new ResponseEntity<>(mapper.toDto(propertyService.createProperty(property)), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Property> updateProperty(@PathVariable UUID id, @RequestBody Property property) {
+    public ResponseEntity<PropertyDto> updateProperty(@PathVariable UUID id, @RequestBody Property property) {
         addLoggingContextId(id);
-        return new ResponseEntity<>(propertyService.updateProperty(id, property), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.toDto(propertyService.updateProperty(id, property)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Property> deleteProperty(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteProperty(@PathVariable UUID id) {
         addLoggingContextId(id);
         propertyService.deleteProperty(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
