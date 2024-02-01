@@ -1,0 +1,507 @@
+{
+	"info": {
+		"_postman_id": "92c8c80b-8569-45bf-949b-69b3a53ab29a",
+		"name": "booking-service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "373241"
+	},
+	"item": [
+		{
+			"name": "Property",
+			"item": [
+				{
+					"name": "Get all Properties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{booking-service-url}}/properties",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a Property",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "0b865fd9-256d-47d2-b8a0-249f27d24f12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a property",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a property",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"ownerName\": \"Sly Stone\"\n}"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a  property",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"address\": \"123 Main St\",\n    \"city\": \"Springfield\",\n    \"ownerName\": \"Curtis Mayfield\"\n}"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Booking",
+			"item": [
+				{
+					"name": "Create a booking",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2022-12-10\",\n    \"endDate\": \"2022-12-11\",\n    \"guestName\": \"Stevie Wonder2\",\n    \"numberOfGuests\": \"2\",\n    \"bookingState\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/bookings",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"bookings"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all bookings",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/bookings",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"bookings"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a booking",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/bookings/:bookingId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								},
+								{
+									"key": "bookingId",
+									"value": "a4337580-256f-4c90-b262-700bda06eb39"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a booking",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/bookings/:bookingId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								},
+								{
+									"key": "bookingId",
+									"value": "a4337580-256f-4c90-b262-700bda06eb39"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a booking",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"startDate\": \"2022-12-01\",\n        \"endDate\": \"2022-12-10\",\n        \"guestName\": \"Stevie Wonder2\",\n        \"numberOfGuests\": \"2\",\n        \"bookingState\": \"CANCELLED\"\n    }"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/bookings/:bookingId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"bookings",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								},
+								{
+									"key": "bookingId",
+									"value": "d0343c80-aa1e-4d89-bdad-c1e625637ac9"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Block",
+			"item": [
+				{
+					"name": "Create a block",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2022-12-11\",\n    \"endDate\": \"2022-12-13\",\n    \"reason\" : \"Painting\"\n}"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/blocks",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"blocks"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all blocks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/blocks",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"blocks"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8eed148c-8bc0-4351-99da-80b977e60557"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a block",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/blocks/:blockId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"blocks",
+								":blockId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								},
+								{
+									"key": "blockId",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a block",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/blocks/:bookingId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"blocks",
+								":bookingId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								},
+								{
+									"key": "bookingId",
+									"value": "a4337580-256f-4c90-b262-700bda06eb39"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a block",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"startDate\": \"2022-12-01\",\n    \"endDate\": \"2022-12-10\",\n    \"reason\" : \"Painting\"\n}"
+						},
+						"url": {
+							"raw": "{{booking-service-url}}/properties/:id/blocks/:blockId",
+							"host": [
+								"{{booking-service-url}}"
+							],
+							"path": [
+								"properties",
+								":id",
+								"blocks",
+								":blockId"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cd1410f3-0d88-46a6-a5df-d7759c7777ae"
+								},
+								{
+									"key": "blockId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

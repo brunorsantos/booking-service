@@ -91,10 +91,6 @@ public class BookingServiceImpl implements BookingService{
             throw new ResourceNotFoundException("Booking not found");
         }
 
-        if (booking.getBookingState() == BookingState.CANCELLED && returnedBooking.getBookingState() != BookingState.ACTIVE) {
-            throw new IllegalArgumentException("Only Active bookings can be cancelled");
-        }
-
         final var property = propertyService.getPropertyEnriched(propertyId);
 
         if (booking.getBookingState() == BookingState.ACTIVE && property.isBooked(booking.getStartDate(), booking.getEndDate(), id)) {

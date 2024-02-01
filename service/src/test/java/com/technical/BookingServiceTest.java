@@ -376,22 +376,6 @@ public class BookingServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenBookingIsNotActiveOnUpdate() {
-        final var referenceDate = LocalDate.now();
-        final var at3 = referenceDate.plusDays(3);
-        final var at5 = referenceDate.plusDays(5);
-
-        final var propertyId = UUID.randomUUID();
-        final var booking = new Booking(UUID.randomUUID(), at3, at5, "Guest name1", "2", propertyId, BookingState.CANCELLED);
-
-        when(bookingRepositoryMock.findById(booking.getId())).thenReturn(Optional.of(new BookingEntity(booking.getId(), at3, at5, "Guest name1", "2", propertyId, BookingEntityState.CANCELLED)));
-
-        assertThrows(IllegalArgumentException.class, () ->{
-            subject.updateBooking(propertyId, booking.getId(), booking);
-        });
-    }
-
-    @Test
     void shouldThrowExceptionWhenPropertyIsBookedOnUpdate() {
         final var referenceDate = LocalDate.now();
         final var at1 = referenceDate.plusDays(1);
