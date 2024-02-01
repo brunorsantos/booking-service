@@ -4,7 +4,7 @@
 
 This a simple booking service that allows you to book or block properties. 
 
-It is a RESTful Java 17 application that uses Spring Boot and H2 database.
+It is a RESTful Java 17 application that uses Spring Boot and H2 database using JPA.
 
 Its developed using layered architecture, with an app, service, repository layers. Divided into modules, with a domain modules.
 
@@ -70,17 +70,18 @@ A postman collection is provided in the `postman` folder for testing purposes.
 - Use proper environment variables for configuration.
 - Use some APM tool to monitor the application. (Like datadog, newrelic, etc)
 - Use some log management tool to centralize logs. (Like ELK)
-- 
 
 ### Design improvements
 
 - Richardson Maturity Model level 3 TODO - Add HATEOAS to the responses
 - Include pagination in the list responses
 - Use better Lombok annotations to avoid boilerplate code
-- 
 
 ### Code improvements
 
-- Even if is possible to deal properly with booking cancelling and rebooking using the `/properties/{id}/bookings/{id}` endpoint, it would be better to have a specific endpoint for those, isolating rules and making it easier to consumers.
+- It's possible to deal properly with booking cancelling and rebooking using the `/properties/{id}/bookings/{id}` endpoint, but it would be better to have a specific endpoint for those, isolating rules and making it easier to consumers.
 - Don't allow to book or block a property past dates (maybe isolating booking history to a different microservice)
+- Have specific entities and endpoints for property owners and guests.
+- Create unit testing for validations
+- Create specific unit tests for entity mappers
 - 
