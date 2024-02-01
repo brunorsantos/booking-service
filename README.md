@@ -4,9 +4,9 @@
 
 This a simple booking service that allows you to book or block properties. 
 
-It is a RESTful Java 17 application that uses Spring Boot and H2 database using JPA.
+It is a RESTful Java 17 application with Spring Boot and H2 database using JPA.
 
-Its developed using layered architecture, with an app, service, repository layers. Divided into modules, with a domain modules.
+Its developed using layered architecture, with an app, service, repository layers. Divided into modules.
 
 
 ## Specifics
